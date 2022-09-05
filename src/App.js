@@ -77,7 +77,7 @@ const reducer = (state, action) => {
     }
 
     case 'clear': {
-      return {sum: '', input: '', operatorString: '' }
+      return {sum: 0, input: '', operatorString: '' }
     }
 
   }
