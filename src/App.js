@@ -4,6 +4,18 @@ import Button from './Button'
 import React, { useReducer, useEffect, useState } from 'react';
 
 
+
+const evaluation = (num) => {
+  try {
+    return eval(num)
+  }
+  catch(err) {
+    return 'INVALID'
+  }
+}
+
+const lastChar = (char) => ['+','-','*','/'].indexOf(char) !== -1
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'input': {
@@ -11,38 +23,57 @@ const reducer = (state, action) => {
       if (state.input === '' && action.value === 0)
       { 
         console.log('første feilplass')
-        return {sum: state.sum, input: state.input, operatorString: '' }
+        return {sum: state.sum, input: state.input, operatorString: '', decimalAllowed: state.decimalAllowed }
       } 
       console.log('Andre  feilplass')
-      return {sum: state.sum, input: state.input + action.value, operatorString: '' }
+      return {sum: state.sum, input: state.input + action.value, operatorString: '', decimalAllowed: state.decimalAllowed }
     }
 
     case 'operatorString': {
       //Vi tillater +-, -- , *- , /-
       if (state.operatorString.length === 1 && action.value === '-') {
         console.log('første if')
-        return {sum: state.sum, input: state.input + action.value, operatorString: state.operatorString + action.value }
+        return {sum: state.sum, input: state.input + action.value, operatorString: state.operatorString + action.value, decimalAllowed: true  }
       }
 
       else if (state.operatorString.length === 1 && action.value !== '-') {
         console.log('Andre if')
-        return {sum: state.sum, input: state.input.slice(0,-1) + action.value, operatorString:  action.value }
+        return {sum: state.sum, input: state.input.slice(0,-1) + action.value, operatorString:  action.value, decimalAllowed: true  }
       }
 
       else if (state.operatorString.length === 0) {
         console.log('Tredje if')
-        return {sum: state.sum, input: state.input + action.value, operatorString:  action.value }
+        return {sum: state.sum, input: state.input + action.value, operatorString:  action.value, decimalAllowed: true }
       }
 
       else if (state.operatorString.length === 2) {
         console.log('Fjerde if')
-        return {sum: state.sum, input: state.input.slice(0,-2) + action.value, operatorString: action.value }
+        return {sum: state.sum, input: state.input.slice(0,-2) + action.value, operatorString: action.value, decimalAllowed: true  }
       }
       //return {sum: state.sum, input: state.input + action.value, operatorString: state.operatorString + action.value }
     }
 
+    case 'decimal': {
+      if (state.input === '' && state.decimalAllowed) {
+        return {sum: state.sum, input: '0' + action.value, operatorString: state.operatorString, decimalAllowed: false }
+      }
+
+      else if (state.input !== '' && state.decimalAllowed && lastChar(state.input.slice(-1))) {
+        return {sum: state.sum, input: state.input + '0' + action.value, operatorString: state.operatorString , decimalAllowed: false }
+      }
+
+      else if (state.input !== '' && state.decimalAllowed && !lastChar(state.input.slice(-1))) {
+        return {sum: state.sum, input: state.input + action.value, operatorString: state.operatorString , decimalAllowed: false }
+      }
+
+      else if (!state.decimalAllowed) {
+        return {sum: state.sum, input: state.input, operatorString: state.operatorString , decimalAllowed: false }
+      }
+
+    }
+
     case 'equals': {
-      return {sum: eval(state.input), input: state.input, operatorString: state.operatorString }
+      return {sum: evaluation(state.input), input: state.input, operatorString: state.operatorString }
     }
 
     case 'clear': {
@@ -56,7 +87,8 @@ function App() {
   const [state, dispatch] = useReducer(reducer, {
     sum: 0, 
     input: '',
-    operatorString: ''
+    operatorString: '',
+    decimalAllowed: true,
   })
 
   const stringInput = '2+5-45*57/3'

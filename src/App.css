@@ -20,6 +20,11 @@
   text-align: right;
 }
 
+.display * {
+  margin: 0;
+  line-break: anywhere;
+}
+
 .grid-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -31,15 +36,12 @@
 }
 
 .outputScreen {
-  margin: 0;
   padding-top: 2%;
   padding-right: 1%;
   font-size: 1.5em;
   color: white;
-  line-break: anywhere;
 }
 .formulaScreen {
-  margin: 0;
   padding-top: 5%;
   padding-right: 1%;
   padding-bottom: 2%;

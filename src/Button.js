@@ -23,6 +23,11 @@ export default function Button({id, element, dispatch}) {
         else if (id === 'clear') {
             dispatch({type: 'clear'})
         }
+
+        else if (id == 'decimal') {
+            console.log('decimal heere dispatch!')
+            dispatch({type: 'decimal', value: element})
+        }
     }
     return (<div id={id} className="button" onClick={onClickHandler}>{element}</div>)
 }
