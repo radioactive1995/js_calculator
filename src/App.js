@@ -1,7 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import Button from './Button'
-import React, { useReducer, useEffect, useState } from 'react';
+import React, { useReducer } from 'react';
 
 
 
@@ -22,35 +21,35 @@ const reducer = (state, action) => {
       //Kan ikke legge til 0 når input default er 0, f.eks ikke lov -> 00
       if (state.input === '' && action.value === 0)
       { 
-        console.log('første feilplass')
         return {sum: state.sum, input: state.input, operatorString: '', decimalAllowed: state.decimalAllowed }
-      } 
-      console.log('Andre  feilplass')
-      return {sum: state.sum, input: state.input + action.value, operatorString: '', decimalAllowed: state.decimalAllowed }
+      }
+      
+      else if (!state.newEvaluation) {
+        return {sum: state.sum, input: state.input + action.value, operatorString: '', decimalAllowed: state.decimalAllowed }
+      }
+
+      else if (state.newEvaluation) {
+        return {sum: 0, input: '' + action.value, operatorString: '', decimalAllowed: state.decimalAllowed }
+      }
     }
 
     case 'operatorString': {
       //Vi tillater +-, -- , *- , /-
       if (state.operatorString.length === 1 && action.value === '-') {
-        console.log('første if')
         return {sum: state.sum, input: state.input + action.value, operatorString: state.operatorString + action.value, decimalAllowed: true  }
       }
 
       else if (state.operatorString.length === 1 && action.value !== '-') {
-        console.log('Andre if')
         return {sum: state.sum, input: state.input.slice(0,-1) + action.value, operatorString:  action.value, decimalAllowed: true  }
       }
 
       else if (state.operatorString.length === 0) {
-        console.log('Tredje if')
         return {sum: state.sum, input: state.input + action.value, operatorString:  action.value, decimalAllowed: true }
       }
 
       else if (state.operatorString.length === 2) {
-        console.log('Fjerde if')
         return {sum: state.sum, input: state.input.slice(0,-2) + action.value, operatorString: action.value, decimalAllowed: true  }
       }
-      //return {sum: state.sum, input: state.input + action.value, operatorString: state.operatorString + action.value }
     }
 
     case 'decimal': {
@@ -73,11 +72,11 @@ const reducer = (state, action) => {
     }
 
     case 'equals': {
-      return {sum: evaluation(state.input), input: state.input, operatorString: state.operatorString }
+      return {sum: evaluation(state.input), input: String(evaluation(state.input)), operatorString: state.operatorString, newEvaluation: true }
     }
 
     case 'clear': {
-      return {sum: 0, input: '', operatorString: '' }
+      return {sum: 0, input: '', operatorString: '', decimalAllowed: true, newEvaluation: false }
     }
 
   }
@@ -89,17 +88,15 @@ function App() {
     input: '',
     operatorString: '',
     decimalAllowed: true,
+    newEvaluation: false,
   })
-
-  const stringInput = '2+5-45*57/3'
-  //const stringInput = '5+5'
   
 
   return (
     <div className="container">
       <div className='display'>
         <p className='outputScreen'>{state.sum}</p>
-        <p className='formulaScreen'>{state.input !== '' ? state.input : '0'}</p>
+        <p className='formulaScreen' id='display'>{state.input !== '' ? state.input : '0'}</p>
       </div>
       <div className='grid-buttons'>
         <Button id={'add'} element={'+'} dispatch={dispatch} />

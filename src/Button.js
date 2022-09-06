@@ -12,7 +12,6 @@ export default function Button({id, element, dispatch}) {
             dispatch({type: 'input', value: element})
         }
         else if(operatorIds.indexOf(id) !== -1) {
-            console.log('fant operator element')
             dispatch({type: 'operatorString', value: element})
         }
 
@@ -25,7 +24,6 @@ export default function Button({id, element, dispatch}) {
         }
 
         else if (id == 'decimal') {
-            console.log('decimal heere dispatch!')
             dispatch({type: 'decimal', value: element})
         }
     }
