@@ -19,7 +19,7 @@ const reducer = (state, action) => {
   switch (action.type) {
     case 'input': {
       //Kan ikke legge til 0 når input default er 0, f.eks ikke lov -> 00
-      if (state.input === '' && action.value === 0)
+      if ((state.input === '' && action.value === 0) || (lastChar(state.input.slice(-1)) && action.value === 0))
       { 
         return {sum: state.sum, input: state.input, operatorString: '', decimalAllowed: state.decimalAllowed }
       }
@@ -29,7 +29,7 @@ const reducer = (state, action) => {
       }
 
       else if (state.newEvaluation) {
-        return {sum: 0, input: '' + action.value, operatorString: '', decimalAllowed: state.decimalAllowed }
+        return {sum: 0, input: '' + action.value, operatorString: '', decimalAllowed: state.decimalAllowed, newEvaluation: false }
       }
     }
 
